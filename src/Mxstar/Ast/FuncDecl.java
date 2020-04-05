@@ -2,7 +2,6 @@ package Mxstar.Ast;
 
 import Mxstar.Ast.Statement.*;
 import Mxstar.Symbol.*;
-import com.sun.security.auth.module.NTSystem;
 
 import java.util.LinkedList;
 import java.util.List;
