@@ -1,0 +1,73 @@
+package Mxstar.Ast.Expr;
+
+import org.antlr.v4.runtime.Token;
+import Mxstar.ErrorProcessor.*;
+
+import static Parser.MxstarLexer.*;
+
+import Mxstar.Ast.*;
+public class LiteralExpr extends Expr {
+    public String typeName;
+    public String value;
+
+    public LiteralExpr(Token token) {
+        location = new Location(token);
+//        System.out.println(location);
+        switch (token.getType()) {
+            case Integer_Literal:
+//                System.out.println("int");
+                typeName = "int";
+                value = token.getText();
+                break;
+            case NULL_Literal:
+//                System.out.println("null");
+                typeName = "null";
+                value = token.getText();
+                break;
+            case Bool_Literal:
+//                System.out.println("bool");
+                typeName = "bool";
+                value = token.getText();
+                break;
+            default:
+//                System.out.println("string");
+                typeName = "string";
+                value = escape(token.getText());
+        }
+    }
+    private String escape(String string) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int len = string.length();
+        for(int i = 0; i < len; ++i) {
+            char c = string.charAt(i);
+            if(c == '\\') {
+                char nc = string.charAt(i + 1);
+                switch (nc) {
+                    case 'n':
+                        stringBuilder.append('\n');
+                        break;
+                    case 't':
+                        stringBuilder.append('\t');
+                        break;
+                    case '\\':
+                        stringBuilder.append('\\');
+                        break;
+                    case '"':
+                        stringBuilder.append('"');
+                        break;
+                    default:
+                        stringBuilder.append(nc);
+
+                }
+                i++;
+            } else {
+                stringBuilder.append(c);
+            }
+        }
+//        System.out.println(stringBuilder);
+        return stringBuilder.toString();
+    }
+
+    @Override public void accept(AstVisitor visitor) { visitor.visit(this); }
+
+}
